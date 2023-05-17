@@ -1,0 +1,30 @@
+.hint {
+  cursor: pointer;
+}
+
+mat-card {
+  margin-top: 15px;
+}
+
+.perm-container {
+  padding: 15px 10px;
+  border: 1px solid lightgray;
+  border-radius: 8px;
+}
+
+mat-chip {
+  cursor: pointer;
+}
+
+.submit-button {
+  margin-top: 15px;
+  width: 100%;
+  font-size: 1.2rem;
+  line-height: 3rem;
+}
+
+ul {
+  column-count: 2;
+  list-style-type: none;
+  margin-top: 4px;
+}

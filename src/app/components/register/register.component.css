@@ -1,0 +1,30 @@
+.button-link {
+  color: inherit;
+}
+
+.main-container {
+  width: 70%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 50px 0;
+}
+
+form {
+  padding: 50px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.submit-button {
+  font-size: 1.2rem;
+  line-height: 3.5rem;
+  margin-top: 25px;
+  width: 100%;
+}
+
+.okay-check {
+  color: green;
+  font-weight: bold;
+}

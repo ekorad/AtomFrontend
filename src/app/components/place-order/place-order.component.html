@@ -1,0 +1,63 @@
+<div class="main-container" ngStyle.lt-md="width: 100%">
+  <div *ngIf="currentUser">
+    <mat-vertical-stepper class="mat-elevation-z8" linear #stepper>
+      <mat-step [stepControl]="contactForm" editable>
+        <form ngStyle.lt-md="justify-content: flex-start" [formGroup]="contactForm">
+          <ng-template matStepLabel>Date de contact</ng-template>
+          <span>Avem nevoie de urmatoarele date pentru a iti putea livra comanda in siguranta:</span>
+          <div class="container">
+            <mat-form-field ngStyle.lt-md="width: 100%;" class="responsive-input" appearance="outline">
+              <mat-label>Adresa de livrare</mat-label>
+              <mat-autocomplete #delAddrAuto="matAutocomplete">
+                <mat-option *ngFor="let address of currentUser.addresses" [value]="address">{{address}}</mat-option>
+              </mat-autocomplete>
+              <input type="text" matInput formControlName="deliveryAddress" [matAutocomplete]="delAddrAuto" />
+            </mat-form-field>
+            <mat-form-field ngStyle.lt-md="width: 100%;" class="responsive-input" appearance="outline">
+              <mat-label>Numar de telefon</mat-label>
+              <mat-autocomplete #phoneNumAuto="matAutocomplete">
+                <mat-option *ngFor="let phoneNumber of currentUser.phoneNumbers" [value]="phoneNumber">{{phoneNumber}}
+                </mat-option>
+              </mat-autocomplete>
+              <input type="text" matInput formControlName="phoneNumber" [matAutocomplete]="phoneNumAuto" />
+            </mat-form-field>
+            <button color="primary" mat-raised-button matStepperNext>Mergi mai
+              departe</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="paymentDeliveryForm" editable>
+        <form ngStyle.lt-md="justify-content: flex-start" [formGroup]="paymentDeliveryForm">
+          <ng-template matStepLabel>Modalitate de livrare si plata</ng-template>
+          <span>Selecteaza modalitatea de livrare si cea de plata. Modalitatea de livrare poate impune costuri
+            aditionale.</span>
+          <mat-form-field ngStyle.lt-md="width: 100%" class="responsive-input" appearance="outline">
+            <mat-label>Modalitate de livrare</mat-label>
+            <mat-select formControlName="deliveryMethod">
+              <mat-option *ngFor="let delMethod of deliveryMethods" [value]="delMethod">{{delMethod.name}}</mat-option>
+            </mat-select>
+            <mat-hint *ngIf="deliveryMethodGetCost() !== 0">Costuri additionale: {{deliveryMethodGetCost()}} lei
+            </mat-hint>
+          </mat-form-field>
+          <mat-form-field ngStyle.lt-md="width: 100%" class="responsive-input" appearance="outline">
+            <mat-label>Modalitate de plata</mat-label>
+            <mat-select formControlName="paymentMethod">
+              <mat-option *ngFor="let payMethod of paymentMethods" [value]="payMethod">{{payMethod}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button color="primary" mat-raised-button matStepperNext>Mergi mai
+            departe</button>
+        </form>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>Plasare comanda</ng-template>
+        <span style="display: block">{{getLastStepMessage()}}</span>
+        <hr />
+        <span style="display: block">Total de plata: {{cartGetCosts() + (deliveryMethodGetCost() ? (' + ' +
+          deliveryMethodGetCost() + ' (livrare)'):'')}} lei</span>
+        <button style="margin-top: 15px" color="primary" (click)="onPlaceOrder()" mat-raised-button>Mergi mai
+          departe</button>
+      </mat-step>
+    </mat-vertical-stepper>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+<div class="main-container" ngStyle.lt-md="width: 100%">
+  <mat-accordion *ngIf="currentUser" multi>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Adrese de livrare
+        </mat-panel-title>
+        <mat-panel-description fxHide.lt-sm>
+          Editeaza-ti adresele de livrare
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <span *ngIf="!currentUser.addresses.length">Nu ai setat nici o adresa.</span>
+      <div *ngIf="currentUser.addresses.length">
+        <mat-card *ngFor="let address of currentUser.addresses">
+          <mat-card-header>
+            <mat-card-title>{{address}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-actions>
+            <button mat-raised-button color="warn" (click)="onRemoveAddressClick(address)">Stergere</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+      <form style="margin-top: 15px;" #addrForm="ngForm" [formGroup]="addressForm" novalidate
+        (ngSubmit)="onNewAddressSubmit()">
+        <mat-form-field style="width: 100%" hideRequiredMarker appearance="outline">
+          <mat-label>Adresa</mat-label>
+          <input formControlName="address" matInput type="text" />
+        </mat-form-field>
+        <button [disabled]="addressForm.invalid" color="primary" type="submit" mat-raised-button>Adaugare
+          adresa</button>
+      </form>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Numere de telefon
+        </mat-panel-title>
+        <mat-panel-description fxHide.lt-sm>
+          Editeaza-ti numerele de telefon
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <span *ngIf="!currentUser.phoneNumbers.length">Nu ai setat niciun numar de telefon.</span>
+      <div *ngIf="currentUser.phoneNumbers.length">
+        <mat-card *ngFor="let phoneNumber of currentUser.phoneNumbers">
+          <mat-card-header>
+            <mat-card-title>{{phoneNumber}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-actions>
+            <button mat-raised-button color="warn" (click)="onRemovePhoneNumberClick(phoneNumber)">Stergere</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+      <form style="margin-top: 15px;" #phoneNumForm="ngForm" [formGroup]="phoneNumberForm" novalidate
+        (ngSubmit)="onNewPhoneNumberSubmit()">
+        <mat-form-field style="width: 100%" hideRequiredMarker appearance="outline">
+          <mat-label>Numar telefon</mat-label>
+          <input formControlName="phoneNumber" matInput type="text" />
+        </mat-form-field>
+        <button [disabled]="phoneNumberForm.invalid" color="primary" type="submit" mat-raised-button>Adaugare numar
+          telefon</button>
+      </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <button style="margin-top: 25px; font-size: 1.1rem; padding: 5px 15px" color="primary" mat-raised-button
+    (click)="saveProfile()">Salvare profil</button>
+</div>

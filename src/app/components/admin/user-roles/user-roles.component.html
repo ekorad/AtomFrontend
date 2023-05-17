@@ -1,0 +1,118 @@
+<div class="main-container">
+  <h2>Administrare roluri utilizatori</h2>
+
+  <ng-container *ngIf="isLoading(); then loading; else notLoading">
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="notification-container mat-elevation-z8">
+      <mat-spinner></mat-spinner>
+      <span>Se incarca. Te rugam sa astepti...</span>
+    </div>
+  </ng-template>
+
+  <ng-template #notLoading>
+
+    <ng-container *ngIf="dataSource.data.length; then dataAvailable; else noDataAvailable">
+    </ng-container>
+
+    <ng-template #dataAvailable>
+      <div class="filter-container">
+        <mat-form-field>
+          <mat-label>Cautare</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ex: admin" #input />
+        </mat-form-field>
+      </div>
+
+      <div class="table-container mat-elevation-z8">
+        <mat-table [dataSource]="dataSource" matSort>
+
+          <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+              <mat-checkbox (change)="$event ? masterToggle() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()"></mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-checkbox [disabled]="isReadonlyRole(row)" (click)="$event.stopPropagation()"
+                (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)"></mat-checkbox>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+            <mat-cell style="font-style: italic;" *matCellDef="let role">{{role.id}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Denumire rol</mat-header-cell>
+            <mat-cell style="font-weight: bold;" *matCellDef="let role">{{role.name}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="permissions">
+            <mat-header-cell *matHeaderCellDef>Permisiuni asociate</mat-header-cell>
+            <mat-cell *matCellDef="let role">
+              <mat-chip-list>
+                <mat-chip *ngFor="let permission of role.permissions" (click)="updatePermViewer(permission)">
+                  {{permission}}</mat-chip>
+              </mat-chip-list>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <mat-header-cell *matHeaderCellDef>Descriere rol</mat-header-cell>
+            <mat-cell *matCellDef="let role">{{role.description}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="edit">
+            <mat-header-cell *matHeaderCellDef>Editare rol</mat-header-cell>
+            <mat-cell *matCellDef="let role"><button mat-raised-button color="primary" (click)="editRole(role)"
+                [disabled]="isReadonlyRole(role)">Editare</button></mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="columnsToBeDisplayed"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columnsToBeDisplayed"></mat-row>
+        </mat-table>
+
+        <mat-paginator [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
+      </div>
+    </ng-template>
+
+    <ng-template #noDataAvailable>
+      <div class="notification-container mat-elevation-z8">
+        <span>Nu au fost gasite roluri utilizator.</span>
+      </div>
+    </ng-template>
+
+    <div fxLayout="row">
+      <button class="custom-btn" mat-flat-button color="primary" (click)="onClickRefresh()">Refresh</button>
+      <span class="spacer" fxFlex="auto"></span>
+      <button class="custom-btn" mat-flat-button color="warn" [disabled]="deleteLoading" (click)="onClickDelete()">Stergere</button>
+    </div>
+    <div *ngIf="dataSource.data.length">
+      <app-permission-quickview></app-permission-quickview>
+    </div>
+    <mat-accordion multi>
+      <mat-expansion-panel style="margin-top: 15px;" class="mat-elevation-z8">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Adaugare rol utilizator</mat-panel-title>
+          <mat-panel-description>
+            Creeaza si adauga un rol nou de utilizator
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <app-role #roleAdder (requestRefresh)="onChildRequestRefresh()"></app-role>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel #roleEditorPanel class="mat-elevation-z8">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Editare rol utilizator</mat-panel-title>
+          <mat-panel-description>Editeaza un rol de utilizator existent</mat-panel-description>
+        </mat-expansion-panel-header>
+        <span *ngIf="!roleForEdit">Selecteaza unul din rolurile de mai sus pentru editare apasand butonul
+          "Editare"</span>
+        <app-role *ngIf="roleForEdit" #roleEditor (requestRefresh)="onChildRequestRefresh()" [operationType]="'edit'">
+        </app-role>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </ng-template>
+</div>

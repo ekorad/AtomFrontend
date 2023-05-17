@@ -1,0 +1,27 @@
+  <form #form="ngForm" [formGroup]="roleForm" (ngSubmit)="onSubmit()" novalidate>
+    <mat-form-field appearance="outline" style="width: 100%" hideRequiredMarker>
+      <mat-label>Denumire rol</mat-label>
+      <input formControlName="name" matInput required />
+      <mat-error *ngIf="name.invalid && name.touched">{{getFieldError(name)}}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" style="width: 100%;" hideRequiredMarker>
+      <mat-label>Descriere rol</mat-label>
+      <textarea formControlName="description" matInput required></textarea>
+      <mat-error *ngIf="description.invalid && description.touched">{{getFieldError(description)}}</mat-error>
+    </mat-form-field>
+    <div class="perm-container">
+      <span style="display: block; margin-bottom: 10px;">Permisiuni asociate:</span>
+      <mat-checkbox [checked]="checkedStatus === 'all'" [indeterminate]="checkedStatus === 'some'"
+        (change)="setCheckedAll($event.checked)">Selecteaza toate permisiunile</mat-checkbox>
+      <ul>
+        <li *ngFor="let check of permissionChecks">
+          <mat-checkbox color="primary" [ngModelOptions]="{standalone: true}" [value]="check.permName"
+            [(ngModel)]="check.checked" (change)="onCheckChange($event)">{{check.permName}}
+          </mat-checkbox>
+        </li>
+      </ul>
+    </div>
+    <button mat-raised-button class="submit-button" type="submit" color="primary"
+      [disabled]="roleForm.invalid || checkedStatus === 'none' || loadingStatus">{{operationType === 'add' ? 'Adaugare'
+      : 'Editare'}}</button>
+  </form>

@@ -1,0 +1,33 @@
+<div *ngIf="!productsLoading && !productsLoadingError">
+  <mat-card style="margin-bottom: 10px;" *ngFor="let pair of associatedProducts | keyvalue">
+    <mat-card-header>
+      <mat-card-title>{{pair.key.productName}}</mat-card-title>
+      <mat-card-title>Pret individual: <b>{{pair.key.newPrice}}</b> lei</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <span>Cantitate: <b>{{pair.value}}</b></span>
+      <span class="spacer" fxFlex="auto"></span>
+      <span>Pret total individual: <b>{{computeTotalIndividualProductPrice(pair.key)}}</b> lei</span>
+    </mat-card-content>
+    <mat-card-actions>
+      <button color="primary" mat-raised-button (click)="addOneProduct(pair.key)">+1</button>
+      <button color="accent" mat-raised-button (click)="removeOneProduct(pair.key)">-1</button>
+      <button color="warn" mat-raised-button (click)="removeProduct(pair.key)">Elimina toate</button>
+    </mat-card-actions>
+  </mat-card>
+  <form (ngSubmit)="onSubmitEditOrder()" *ngIf="selectedOrder" class="add-product-form" [formGroup]="editOrderForm">
+    <mat-form-field appearance="outline">
+      <mat-label>ID produs</mat-label>
+      <input formControlName="addProductId" type="number" matInput />
+    </mat-form-field>
+    <button class="col-3-button" color="primary" (click)="addNewProduct()" type="button" mat-raised-button>Adaugare</button>
+    <button class="col-3-button" color="primary" type="submit" mat-raised-button>Salvare</button>
+    <mat-form-field ngStyle.lt-md="width: 100%;" class="responsive-input" appearance="outline">
+      <mat-label>Statut comanda</mat-label>
+      <mat-autocomplete #delAddrAuto="matAutocomplete">
+        <mat-option *ngFor="let status of orderStatuses" [value]="status">{{status}}</mat-option>
+      </mat-autocomplete>
+      <input type="text" matInput formControlName="status" [matAutocomplete]="delAddrAuto" />
+    </mat-form-field>
+  </form>
+</div>

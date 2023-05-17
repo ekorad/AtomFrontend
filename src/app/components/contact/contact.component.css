@@ -1,0 +1,20 @@
+.main-container {
+  width: 70%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 50px 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+
+.col-2 {
+  width: 49%;
+}
+
+agm-map {
+  height: 400px;
+}

@@ -1,0 +1,59 @@
+<form #form="ngForm" (ngSubmit)="onSubmit()" *ngIf="hasProductData()" [formGroup]="productForm" novalidate>
+  <mat-form-field class="w-100" appearance="outline" hideRequiredMarker>
+    <mat-label>Nume</mat-label>
+    <input formControlName="name" type="text" matInput required />
+  </mat-form-field>
+  <mat-form-field class="w-100" appearance="outline" hideRequiredMarker>
+    <mat-label>Descriere</mat-label>
+    <textarea formControlName="description" type="text" matInput required></textarea>
+  </mat-form-field>
+  <div class="row-2-col">
+    <mat-form-field class="col-2" appearance="outline">
+      <mat-label>Pret vechi</mat-label>
+      <input autocomplete="off" formControlName="oldPrice" type="text" matInput />
+      <span matSuffix>lei</span>
+    </mat-form-field>
+    <mat-form-field class="col-2" appearance="outline" hideRequiredMarker>
+      <mat-label>Pret curent</mat-label>
+      <input autocomplete="off" formControlName="currentPrice" type="text" matInput required />
+      <span matSuffix>lei</span>
+    </mat-form-field>
+  </div>
+  <mat-form-field class="w-100" appearance="outline" hideRequiredMarker>
+    <mat-label>Procesor</mat-label>
+    <mat-autocomplete #cpuAuto="matAutocomplete">
+      <mat-option *ngFor="let cpu of productData.cpus" [value]="cpu">{{cpu}}
+      </mat-option>
+    </mat-autocomplete>
+    <input type="text" matInput formControlName="cpu" [matAutocomplete]="cpuAuto" />
+  </mat-form-field>
+  <mat-form-field class="w-100" appearance="outline" hideRequiredMarker>
+    <mat-label>Placa video</mat-label>
+    <mat-autocomplete #gpuAuto="matAutocomplete">
+      <mat-option *ngFor="let gpu of productData.gpus" [value]="gpu">{{gpu}}
+      </mat-option>
+    </mat-autocomplete>
+    <input type="text" matInput formControlName="gpu" [matAutocomplete]="gpuAuto" />
+  </mat-form-field>
+  <mat-form-field class="w-100" appearance="outline" hideRequiredMarker>
+    <mat-label>Placa de baza</mat-label>
+    <mat-autocomplete #mbAuto="matAutocomplete">
+      <mat-option *ngFor="let mb of productData.motherboards" [value]="mb">{{mb}}
+      </mat-option>
+    </mat-autocomplete>
+    <input type="text" matInput formControlName="motherboard" [matAutocomplete]="mbAuto" />
+  </mat-form-field>
+  <mat-form-field class="w-100" appearance="outline" hideRequiredMarker>
+    <mat-label>Memorie RAM</mat-label>
+    <mat-autocomplete #ramAuto="matAutocomplete">
+      <mat-option *ngFor="let ram of productData.ram" [value]="ram">{{ram}}
+      </mat-option>
+    </mat-autocomplete>
+    <input type="text" matInput formControlName="ram" [matAutocomplete]="ramAuto" />
+  </mat-form-field>
+  <span *ngIf="currentProduct">{{!hasImage ? 'Acest produs nu are setata o imagine!' : 'Acest produs are setata o imagine.'}} <span *ngIf="hasImage">Click <a target="_blank" href="http://localhost:8080/products/image?id={{currentProduct.id}}">aici</a> pentru a o vizualiza.</span></span>
+  <input fxHide type="file" #fileUploader (change)="onSelectImage($event)" />
+  <button type="button" mat-raised-button (click)="fileUploader.click()">Setare imagine</button>
+  <button [disabled]="productForm.invalid || isLoading" class="submit-button" color="primary" type="submit"
+    mat-raised-button>{{operationType == 'add' ? 'Adaugare' : 'Editare'}}</button>
+</form>

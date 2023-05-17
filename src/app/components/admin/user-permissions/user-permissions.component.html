@@ -1,0 +1,61 @@
+<div class="main-container">
+  <h2>Vizualizare permisiuni utilizatori</h2>
+
+  <ng-container *ngIf="isLoading; then loading; else notLoading">
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="notification-container mat-elevation-z8">
+      <mat-spinner></mat-spinner>
+      <span>Se incarca. Te rugam sa astepti...</span>
+    </div>
+  </ng-template>
+
+  <ng-template #notLoading>
+
+    <ng-container *ngIf="dataSource.data.length; then dataAvailable; else noDataAvailable">
+    </ng-container>
+
+    <ng-template #dataAvailable>
+      <div class="filter-container">
+        <mat-form-field>
+          <mat-label>Cautare</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ex: modify_any_comments" #input />
+        </mat-form-field>
+      </div>
+
+      <div class="table-container mat-elevation-z8">
+        <mat-table [dataSource]="dataSource" matSort>
+
+          <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+            <mat-cell style="font-style: italic;" *matCellDef="let permission">{{permission.id}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Denumire permisiune</mat-header-cell>
+            <mat-cell style="font-weight: bold;" *matCellDef="let permission">{{permission.name}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <mat-header-cell *matHeaderCellDef>Descriere permisiune</mat-header-cell>
+            <mat-cell *matCellDef="let permission">{{permission.description}}</mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="columnsToBeDisplayed"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columnsToBeDisplayed"></mat-row>
+        </mat-table>
+
+        <mat-paginator [pageSizeOptions]="[10, 20]"></mat-paginator>
+      </div>
+    </ng-template>
+
+    <ng-template #noDataAvailable>
+      <div class="notification-container mat-elevation-z8">
+        <span>Nu au fost gasite permisiuni utilizator.</span>
+      </div>
+    </ng-template>
+
+    <button class="refresh-btn" mat-flat-button color="primary" (click)="onClick()">Refresh</button>
+  </ng-template>
+</div>

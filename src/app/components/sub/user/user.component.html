@@ -1,0 +1,38 @@
+<form #form="ngForm" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <mat-form-field class="column" appearance="outline" hideRequiredMarker>
+    <mat-label>Prenume</mat-label>
+    <input formControlName="firstName" type="text" matInput />
+    <mat-error *ngIf="firstName.invalid && firstName.touched">{{getInputError(firstName)}}</mat-error>
+  </mat-form-field>
+  <mat-form-field class="column" appearance="outline" hideRequiredMarker>
+    <mat-label>Nume</mat-label>
+    <input formControlName="lastName" type="text" matInput />
+    <mat-error *ngIf="lastName.invalid && lastName.touched">{{getInputError(lastName)}}</mat-error>
+  </mat-form-field>
+  <mat-form-field class="column" appearance="outline" hideRequiredMarker>
+    <mat-label>Nume utilizator</mat-label>
+    <input formControlName="username" type="text" matInput />
+    <mat-error *ngIf="username.invalid && username.touched">{{getInputError(username)}}</mat-error>
+  </mat-form-field>
+  <mat-form-field class="column" appearance="outline" hideRequiredMarker>
+    <mat-label>Adresa e-mail</mat-label>
+    <input formControlName="email" type="text" matInput />
+    <mat-error *ngIf="email.invalid && email.touched">{{getInputError(email)}}</mat-error>
+  </mat-form-field>
+  <mat-form-field class="column" appearance="outline" hideRequiredMarker>
+    <mat-label>Parola</mat-label>
+    <input formControlName="password" type="password" matInput />
+    <mat-error *ngIf="password.invalid && password.touched">{{getInputError(password)}}</mat-error>
+  </mat-form-field>
+  <mat-form-field class="column" appearance="outline" hiderRequiredMarker>
+    <mat-label>Rol utilizator asociat</mat-label>
+    <mat-select formControlName="role">
+      <mat-option *ngFor="let role of roleNames" [value]="role">{{role}}</mat-option>
+      <mat-error *ngIf="role_c.invalid && role_c.touched">{{getInputError(role_c)}}</mat-error>
+    </mat-select>
+  </mat-form-field>
+  <mat-checkbox class="column" formControlName="activated">Cont activat</mat-checkbox>
+  <mat-checkbox class="column" formControlName="locked">Cont blocat</mat-checkbox>
+
+  <button [disabled]="loadingStatus || userForm.invalid" class="submit-button" color="primary" type="submit" mat-raised-button>{{operation === 'add' ? 'Adaugare' : 'Editare'}}</button>
+</form>

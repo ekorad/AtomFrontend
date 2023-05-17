@@ -1,0 +1,17 @@
+<div class="main-container mat-elevation-z8">
+  <span class="hint"
+    matTooltip="Selecteaza unul dintre rolurile de utilizator de mai sus pentru a il putea vizualiza in detaliu aici"><u>Vizualizare
+      rol utilizator</u></span>
+  <mat-card *ngIf="selectedRole">
+    <mat-card-title>{{selectedRole.name}}</mat-card-title>
+    <mat-card-subtitle>{{selectedRole.description}}</mat-card-subtitle>
+    <mat-card-content>
+      <mat-chip-list>
+        <mat-chip (click)="onPermQuickview(permission)" *ngFor="let permission of selectedRole.permissions">{{permission}}</mat-chip>
+      </mat-chip-list>
+    </mat-card-content>
+  </mat-card>
+  <div *ngIf="selectedRole">
+    <app-permission-quickview></app-permission-quickview>
+  </div>
+</div>

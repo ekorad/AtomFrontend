@@ -1,0 +1,17 @@
+form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.column {
+  flex-basis: 49%;
+}
+
+.submit-button {
+  margin-top: 15px;
+  width: 100%;
+  font-size: 1.2rem;
+  line-height: 3rem;
+}

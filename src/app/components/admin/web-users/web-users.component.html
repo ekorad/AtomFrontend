@@ -1,0 +1,158 @@
+<div class="main-container">
+  <h2>Vizualizare permisiuni utilizatori</h2>
+
+  <ng-container *ngIf="areResourcesLoading(); then loading; else notLoading">
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="notification-container mat-elevation-z8">
+      <mat-spinner></mat-spinner>
+      <span>Se incarca. Te rugam sa astepti...</span>
+    </div>
+  </ng-template>
+
+  <ng-template #notLoading>
+
+    <ng-container *ngIf="dataSource.data.length; then dataAvailable; else noDataAvailable">
+    </ng-container>
+
+    <ng-template #dataAvailable>
+      <div class="filter-container">
+        <mat-form-field>
+          <mat-label>Cautare</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ex: vasile.gheorghe@yahoo.com" #input />
+        </mat-form-field>
+      </div>
+
+      <div class="mat-elevation-z8">
+        <div class="table-container">
+          <mat-table [dataSource]="dataSource" matSort>
+
+            <ng-container matColumnDef="select" sticky>
+              <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? tableMasterToggle() : null"
+                  [checked]="selection.hasValue() && tableIsAllSelected()"
+                  [indeterminate]="selection.hasValue() && !tableIsAllSelected()">
+                </mat-checkbox>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                  [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="id" sticky>
+              <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+              <mat-cell style="font-style: italic;" *matCellDef="let user">{{user.id}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="firstName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Prenume</mat-header-cell>
+              <mat-cell *matCellDef="let user">{{user.firstName}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="lastName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Nume</mat-header-cell>
+              <mat-cell *matCellDef="let user">{{user.lastName}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="username" sticky>
+              <mat-header-cell style="border-right: 1px solid whitesmoke;" *matHeaderCellDef mat-sort-header>Nume
+                utilizator</mat-header-cell>
+              <mat-cell style="border-right: 1px solid lightgray;" *matCellDef="let user">{{user.username}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="email">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Adresa e-mail</mat-header-cell>
+              <mat-cell *matCellDef="let user">{{user.email}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="password">
+              <mat-header-cell style="justify-content: center;" *matHeaderCellDef>Parola (criptata)</mat-header-cell>
+              <mat-cell style="justify-content: center;" *matCellDef="let user">
+                <mat-icon style="cursor: pointer" [matTooltip]="user.password">visibility</mat-icon>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="activated">
+              <mat-header-cell style="justify-content: center;" *matHeaderCellDef mat-sort-header>Activat
+              </mat-header-cell>
+              <mat-cell style="justify-content: center;" *matCellDef="let user">
+                <mat-checkbox disabled [checked]="user.activated"></mat-checkbox>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="locked">
+              <mat-header-cell style="justify-content: center;" *matHeaderCellDef mat-sort-header>Blocat
+              </mat-header-cell>
+              <mat-cell style="justify-content: center;" *matCellDef="let user">
+                <mat-checkbox disabled [checked]="user.locked"></mat-checkbox>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="role">
+              <mat-header-cell *matHeaderCellDef>Rol</mat-header-cell>
+              <mat-cell *matCellDef="let user"><button mat-raised-button
+                  (click)="quickViewRole(user.role)">{{user.role}}</button></mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="edit" stickyEnd>
+              <mat-header-cell style="border-left: 1px solid whitesmoke; justify-content: center;" *matHeaderCellDef>
+                Editare</mat-header-cell>
+              <mat-cell style="border-left: 1px solid lightgray; justify-content: center;" *matCellDef="let user">
+                <button mat-raised-button color="primary" (click)="editUser(user)">Editare</button>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="columnsToBeDisplayed"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnsToBeDisplayed"></mat-row>
+          </mat-table>
+        </div>
+
+        <mat-paginator [pageSizeOptions]="[10, 20]"></mat-paginator>
+      </div>
+    </ng-template>
+
+    <ng-template #noDataAvailable>
+      <div class="notification-container mat-elevation-z8">
+        <span>Nu au fost gasite conturi utilizator.</span>
+      </div>
+    </ng-template>
+
+    <div fxLayout="row">
+      <button class="custom-btn" mat-flat-button color="primary" (click)="onClickRefresh()">Refresh</button>
+      <span class="spacer" fxFlex="auto"></span>
+      <button class="custom-btn" mat-flat-button color="warn" [disabled]="deleteLoading"
+        (click)="onClickDelete()">Stergere</button>
+    </div>
+
+    <div *ngIf="dataSource.data.length">
+      <app-role-quickview></app-role-quickview>
+    </div>
+
+    <mat-accordion multi>
+      <mat-expansion-panel style="margin-top: 15px;" class="mat-elevation-z8">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Adaugare cont utilizator</mat-panel-title>
+          <mat-panel-description>
+            Creeaza si adauga un nou cont de utilizator
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <app-user #userAdder (requestRefresh)="onChildRequestRefresh()"></app-user>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel #userEditorPanel class="mat-elevation-z8">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Editare cont utilizator</mat-panel-title>
+          <mat-panel-description>
+            Editeaza un cont de utilizator existent
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <span *ngIf="!userForEdit">Selecteaza unul din conturile de utilizator de mai sus pentru editare apasand butonul
+          "Editare"</span>
+        <app-user *ngIf="userForEdit" #userEditor operation="edit" (requestRefresh)="onChildRequestRefresh()"></app-user>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </ng-template>
+</div>

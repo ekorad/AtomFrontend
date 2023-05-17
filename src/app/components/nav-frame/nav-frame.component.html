@@ -1,0 +1,75 @@
+<mat-toolbar color="primary" class="mat-elevation-z8">
+  <mat-toolbar-row>
+    <button mat-icon-button fxHide.gt-sm (click)="sidenav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <a routerLink="" class="button-link"><button style="font-size: 1.2rem;" mat-button>
+        <mat-icon svgIcon="atom" style="margin-right: 7px;"></mat-icon>Atom
+      </button>
+    </a>
+    <span fxFlex="auto" fxHide.gt-xs></span>
+    <form (ngSubmit)="onSearchSubmit()" [formGroup]="searchForm" fxLayout="row" fxFlex="auto">
+      <mat-form-field fxFlex="auto" style="font-size: 1rem; margin-left: 10px;" floatLabel="never" fxHide.lt-sm>
+        <mat-label>Cautare produs</mat-label>
+        <input formControlName="searchString" matInput type="text" autocomplete="off" />
+      </mat-form-field>
+    </form>
+    <div fxHide.lt-md>
+      <a *ngFor="let link of links" [routerLink]="link.href" class="button-link"><button
+          mat-button>{{link.caption}}</button></a>
+    </div>
+    <div *ngIf="!isLoggedIn()">
+      <a routerLink="/login" class="button-link">
+        <button mat-icon-button matTooltip="Conectare la contul meu" matTooltipShowDelay="1000">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </a>
+      <a routerLink="/register" class="button-link">
+        <button mat-icon-button matTooltip="Inregistrare cont nou" matTooltipShowDelay="1000">
+          <mat-icon>person_add</mat-icon>
+        </button>
+      </a>
+    </div>
+    <a *ngIf="userHasElevated" routerLink="/admin" class="button-link">
+      <button color="warn" mat-icon-button matTooltip="Mergi la pagina de administrare" matTooltipShowDelay="1000">
+        <mat-icon>admin_panel_settings</mat-icon>
+      </button>
+    </a>
+    <div *ngIf="isLoggedIn()">
+      <a routerLink="/cart" class="button-link">
+        <button mat-icon-button matTooltip="Mergi la cosul meu" matTooltipShowDelay="1000">
+          <mat-icon [matBadgeHidden]="countCartItems() === 0" [matBadge]="countCartItems()" matBadgeColor="warn">
+            shopping_cart</mat-icon>
+        </button>
+      </a>
+      <a routerLink="/my-account" class="button-link">
+        <button mat-icon-button matTooltip="Mergi la contul meu" matTooltipShowDelay="1000">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </a>
+      <button mat-icon-button (click)="logout()" matTooltip="Deconectare de la contul meu" matTooltipShowDelay="1000">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar-row>
+
+  <mat-toolbar-row fxHide.gt-xs>
+    <form (ngSubmit)="onSearchSubmit()" [formGroup]="searchForm" fxFlex="auto">
+      <mat-form-field fxFlex="auto" style="font-size: 1rem; margin-left: 10px;" floatLabel="never">
+        <mat-label>Cautare produs</mat-label>
+        <input formControlName="searchString" matInput type="text" autocomplete="off" />
+      </mat-form-field>
+    </form>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-sidenav-container style="min-height: 100%">
+  <mat-sidenav style="min-width: 200px;" ngStyle.lt-sm="width: 100%" #sidenav>
+    <mat-nav-list>
+      <a mat-list-item *ngFor="let link of links" [href]="link.href" routerLinkActive="active">{{link.caption}}</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content fxFlexFill>
+    <router-outlet (activate)="onActivate($event)"></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

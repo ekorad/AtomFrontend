@@ -1,0 +1,32 @@
+.main-container {
+  width: 70%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 50px 0;
+}
+
+.buy-button {
+  padding: 8px;
+  width: 100%;
+}
+
+.recc-container {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.recc-container mat-card {
+  width: 32%;
+}
+
+.img-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  overflow: hidden;
+}
+

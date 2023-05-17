@@ -1,0 +1,123 @@
+<div class="main-container">
+  <h2>Administrare produse</h2>
+
+  <ng-container *ngIf="isLoading(); then loading; else notLoading">
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="notification-container mat-elevation-z8">
+      <mat-spinner></mat-spinner>
+      <span>Se incarca. Te rugam sa astepti...</span>
+    </div>
+  </ng-template>
+
+  <ng-template #notLoading>
+
+    <ng-container *ngIf="dataSource.data.length; then dataAvailable; else noDataAvailable">
+    </ng-container>
+
+    <ng-template #dataAvailable>
+      <div class="filter-container">
+        <mat-form-field>
+          <mat-label>Cautare</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ex: Asus G551JM GTX 860" #input />
+        </mat-form-field>
+      </div>
+
+      <div class="table-container mat-elevation-z8">
+        <mat-table [dataSource]="dataSource" matSort>
+
+          <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+              <mat-checkbox (change)="$event ? tableMasterToggle() : null"
+                [checked]="selection.hasValue() && tableIsAllSelected()"
+                [indeterminate]="selection.hasValue() && !tableIsAllSelected()">
+              </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+            <mat-cell style="font-style: italic;" *matCellDef="let product">{{product.id}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="productName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Denumire produs</mat-header-cell>
+            <mat-cell *matCellDef="let product">{{product.productName}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <mat-header-cell *matHeaderCellDef>Descriere produs</mat-header-cell>
+            <mat-cell *matCellDef="let product">{{product.description}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="oldPrice">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Pret vechi</mat-header-cell>
+            <mat-cell style="color: gray; font-style: italic;" *matCellDef="let product">{{product.oldPrice}} lei
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="newPrice">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Pret curent</mat-header-cell>
+            <mat-cell *matCellDef="let product">{{product.newPrice}} lei</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="edit" stickyEnd>
+            <mat-header-cell style="justify-content: center;" *matHeaderCellDef>
+              Editare</mat-header-cell>
+            <mat-cell style="justify-content: center;" *matCellDef="let product">
+              <button mat-raised-button color="primary" (click)="editProduct(product)">Editare</button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="columnsToBeDisplayed"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columnsToBeDisplayed"></mat-row>
+        </mat-table>
+
+        <mat-paginator [pageSizeOptions]="[10, 20]"></mat-paginator>
+      </div>
+    </ng-template>
+
+    <ng-template #noDataAvailable>
+      <div class="notification-container mat-elevation-z8">
+        <span>Nu au fost gasite permisiuni utilizator.</span>
+      </div>
+    </ng-template>
+
+    <div fxLayout="row">
+      <button class="custom-btn" mat-flat-button color="primary" (click)="refreshContent()">Refresh</button>
+      <span class="spacer" fxFlex="auto"></span>
+      <button class="custom-btn" mat-flat-button color="warn" [disabled]="deleteLoading"
+        (click)="onClickDelete()">Stergere</button>
+    </div>
+
+    <mat-accordion multi>
+      <mat-expansion-panel style="margin-top: 15px;" class="mat-elevation-z8">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Adaugare produs</mat-panel-title>
+          <mat-panel-description>
+            Adauga un produs nou
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <app-product-editor #productAdder (requestRefreshEmitter)="onChildRequestRefresh()"></app-product-editor>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel #userEditorPanel class="mat-elevation-z8">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Editare produs</mat-panel-title>
+          <mat-panel-description>
+            Editeaza un produs existent
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <span *ngIf="!productForEdit">Selecteaza unul din produsele de mai sus pentru editare apasand butonul
+          "Editare"</span>
+        <app-product-editor *ngIf="productForEdit" #productEditor operationType="edit" (requestRefreshEmitter)="onChildRequestRefresh()"></app-product-editor>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </ng-template>
+</div>

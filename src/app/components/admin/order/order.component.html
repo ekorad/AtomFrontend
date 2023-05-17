@@ -1,0 +1,127 @@
+<div class="main-container">
+  <h2>Administrare comenzi</h2>
+
+  <ng-container *ngIf="isLoading(); then loading; else notLoading">
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="notification-container mat-elevation-z8">
+      <mat-spinner></mat-spinner>
+      <span>Se incarca. Te rugam sa astepti...</span>
+    </div>
+  </ng-template>
+
+  <ng-template #notLoading>
+
+    <ng-container *ngIf="dataSource.data.length; then dataAvailable; else noDataAvailable">
+    </ng-container>
+
+    <ng-template #dataAvailable>
+      <div class="filter-container">
+        <mat-form-field>
+          <mat-label>Cautare</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ex: 0766666666" #input />
+        </mat-form-field>
+      </div>
+
+      <div class="table-container mat-elevation-z8">
+        <mat-table [dataSource]="dataSource" matSort>
+
+          <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+              <mat-checkbox (change)="$event ? tableMasterToggle() : null"
+                [checked]="selection.hasValue() && tableIsAllSelected()"
+                [indeterminate]="selection.hasValue() && !tableIsAllSelected()">
+              </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+            <mat-cell style="font-style: italic;" *matCellDef="let order">{{order.id}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="stage">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Statut comanda</mat-header-cell>
+            <mat-cell *matCellDef="let order">{{order.stage}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="address">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Adresa livrare comanda</mat-header-cell>
+            <mat-cell *matCellDef="let order">{{order.address}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="phoneNumber">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Numar telefon asociat</mat-header-cell>
+            <mat-cell *matCellDef="let order">{{order.phoneNumber}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="deliveryMethod">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Metoda livrare</mat-header-cell>
+            <mat-cell *matCellDef="let order">{{order.deliveryMethod}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="paymentMethod">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Metoda plata</mat-header-cell>
+            <mat-cell *matCellDef="let order">{{order.paymentMethod}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="view" stickyEnd>
+            <mat-header-cell style="justify-content: center;" *matHeaderCellDef>
+              Vizualizare si editare</mat-header-cell>
+            <mat-cell style="justify-content: center;" *matCellDef="let order">
+              <button mat-raised-button color="primary" (click)="viewOrderDetails(order)">Vizualizare</button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="columnsToBeDisplayed"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columnsToBeDisplayed"></mat-row>
+        </mat-table>
+
+        <mat-paginator [pageSizeOptions]="[10, 20]"></mat-paginator>
+      </div>
+    </ng-template>
+
+    <ng-template #noDataAvailable>
+      <div class="notification-container mat-elevation-z8">
+        <span>Nu a fost gasita nicio comanda.</span>
+      </div>
+    </ng-template>
+
+    <div fxLayout="row">
+      <button class="custom-btn" mat-flat-button color="primary" (click)="refreshContent()">Refresh</button>
+      <span class="spacer" fxFlex="auto"></span>
+      <button class="custom-btn" mat-flat-button color="warn" [disabled]="deleteLoading"
+        (click)="onClickDelete()">Stergere</button>
+    </div>
+
+    <mat-accordion multi>
+      <mat-expansion-panel style="margin-top: 15px;" class="mat-elevation-z8">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Vizualizare comanda</mat-panel-title>
+        </mat-expansion-panel-header>
+        <span *ngIf="!orderForView">Selecteaza una din comenzile de mai sus pentru a o vizualiza apasand pe "Vizualizare"</span>
+        <app-order-details-viewer></app-order-details-viewer>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!--
+      <mat-expansion-panel #userEditorPanel class="mat-elevation-z8">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Editare produs</mat-panel-title>
+          <mat-panel-description>
+            Editeaza un produs existent
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <span *ngIf="!productForEdit">Selecteaza unul din produsele de mai sus pentru editare apasand butonul
+          "Editare"</span>
+        <app-product-editor *ngIf="productForEdit" #productEditor operationType="edit" (requestRefreshEmitter)="onChildRequestRefresh()"></app-product-editor>
+      </mat-expansion-panel>
+    </mat-accordion> -->
+  </ng-template>
+</div>

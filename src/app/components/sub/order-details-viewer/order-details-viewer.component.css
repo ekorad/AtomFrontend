@@ -1,0 +1,10 @@
+.add-product-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.col-3-button {
+  width: 32%;
+  max-height: 55px;
+}

@@ -1,0 +1,132 @@
+<div class="main-container" ngStyle.lt-md="width: 100%; padding: 0">
+  <mat-card *ngIf="selectedProduct" ngClass.gt-sm="mat-elevation-z8">
+    <mat-card-header>
+      <mat-card-title>{{selectedProduct.productName}}</mat-card-title>
+      <mat-card-subtitle>Laptop / Notebook</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image src="http://localhost:8080/products/image?id={{selectedProduct.id}}"
+      alt="This product does not have an image set" />
+    <mat-card-content>
+      <div>
+        <b *ngIf="!getAverageReview()">Acest produs nu are nicio recenzie</b>
+        <b *ngIf="getAverageReview()">Recenzie: {{getAverageReview() | number : '1.1'}}</b>
+      </div>
+      <div>
+        <ul>
+          <li>Procesor: {{selectedProduct.cpu}}</li>
+          <li>Placa de baza: {{selectedProduct.motherboard}}</li>
+          <li>Placa video: {{selectedProduct.gpu}}</li>
+          <li>Memorie RAM: {{selectedProduct.ram}}</li>
+        </ul>
+        <span style="display: block; font-size: 1.4rem">Pret: <b>{{selectedProduct.newPrice}}</b> lei</span>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button class="buy-button" color="primary" mat-raised-button (click)="addToCart(selectedProduct.id)">Adauga in
+        cos</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <div class="recc-container">
+    <mat-card *ngIf="persExpReccProduct" class="mat-elevation-z4">
+      <mat-card-header>
+        <mat-card-title>Poate te intereseaza si...</mat-card-title>
+        <mat-card-subtitle>{{persExpReccProduct.productName}}</mat-card-subtitle>
+      </mat-card-header>
+      <div class="img-container">
+        <img mat-card-image src="http://localhost:8080/products/image?id={{persExpReccProduct.id}}"
+          alt="This product does not have an image set" />
+      </div>
+      <mat-card-content>
+        <span style="display: block; font-size: 1.2rem">Pret: <b>{{persExpReccProduct.newPrice}}</b> lei</span>
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="buy-button" color="primary" mat-raised-button
+          (click)="visitProduct(persExpReccProduct.id)">Vizualizeaza</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card *ngIf="mrProduct" class="mat-elevation-z4">
+      <mat-card-header>
+        <mat-card-title>Alti utilizatori au apreciat si...</mat-card-title>
+        <mat-card-subtitle>{{mrProduct.productName}}</mat-card-subtitle>
+      </mat-card-header>
+      <div class="img-container">
+        <img mat-card-image src="http://localhost:8080/products/image?id={{mrProduct.id}}"
+          alt="This product does not have an image set" />
+      </div>
+      <mat-card-content>
+        <span style="display: block; font-size: 1.2rem">Pret: <b>{{mrProduct.newPrice}}</b> lei</span>
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="buy-button" color="primary" mat-raised-button
+          (click)="visitProduct(mrProduct.id)">Vizualizeaza</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card *ngIf="mvProduct" class="mat-elevation-z4">
+      <mat-card-header>
+        <mat-card-title>Alti utilizatori au cautat si...</mat-card-title>
+        <mat-card-subtitle>{{mvProduct.productName}}</mat-card-subtitle>
+      </mat-card-header>
+      <div class="img-container">
+        <img mat-card-image src="http://localhost:8080/products/image?id={{mvProduct.id}}"
+          alt="This product does not have an image set" />
+      </div>
+      <mat-card-content>
+        <span style="display: block; font-size: 1.2rem">Pret: <b>{{mvProduct.newPrice}}</b> lei</span>
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="buy-button" color="primary" mat-raised-button
+          (click)="visitProduct(mvProduct.id)">Vizualizeaza</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <mat-accordion *ngIf="selectedProduct && isLoggedIn()" multi>
+    <mat-expansion-panel class="mat-elevation-z8" style="margin-top: 15px">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Adaugare recenzie
+        </mat-panel-title>
+        <mat-panel-description fxHide.lt-sm>
+          Adauga o recenzie pentru acest produs
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <form #revForm="ngForm" (ngSubmit)="onSubmit()" [formGroup]="reviewForm" novalidate>
+        <mat-form-field appearance="outline" hideRequiredMarker>
+          <mat-label>Nota</mat-label>
+          <mat-select [formControl]="mark" required>
+            <mat-option *ngFor="let m of marks" [value]="m">{{m}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field style="width: 100%" appearance="outline" hideRequiredMarker>
+          <mat-label>Comentariu</mat-label>
+          <textarea formControlName="review" matInput required></textarea>
+        </mat-form-field>
+        <button type="submit" color="primary" mat-raised-button>Adauga recenzie</button>
+      </form>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel *ngIf="selectedProduct.reviews.length" class="mat-elevation-z8" style="margin-top: 15px">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Vizualizare recenzii
+        </mat-panel-title>
+        <mat-panel-description fxHide.lt-sm>
+          Vizualizeaza recenziile oferite de catre cumparatori
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <mat-card style="margin-top: 10px;" *ngFor="let review of selectedProduct.reviews">
+        <mat-card-header>
+          <mat-card-title>Nota: {{review.grade}}</mat-card-title>
+          <mat-card-subtitle>{{review.date | date}}</mat-card-subtitle>
+          <br />
+          <mat-card-content>
+            <p>{{review.review}}</p>
+          </mat-card-content>
+        </mat-card-header>
+      </mat-card>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

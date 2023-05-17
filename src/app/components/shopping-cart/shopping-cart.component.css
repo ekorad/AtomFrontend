@@ -1,0 +1,23 @@
+.main-container {
+  padding: 25px;
+}
+
+.cart-empty-notification span {
+  font-size: 1.5rem;
+  display: block;
+  text-align: center;
+}
+
+.cart-empty-notification {
+  padding: 50px 0;
+  background-color: whitesmoke;
+}
+
+mat-card {
+  margin-bottom: 10px;
+}
+
+.price {
+  display: block;
+  font-size: 1.2rem;
+}

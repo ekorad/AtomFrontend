@@ -1,0 +1,9 @@
+<div class="main-container mat-elevation-z8">
+  <span class="hint"
+    matTooltip="Selecteaza una din permisiunile de mai sus pentru a o putea vizualiza in detaliu aici"><u>Vizualizare
+      permisiune utilizator</u></span>
+  <mat-card *ngIf="selectedPerm">
+    <mat-card-title>{{selectedPerm.name}}</mat-card-title>
+    <mat-card-subtitle>{{selectedPerm.description}}</mat-card-subtitle>
+  </mat-card>
+</div>
